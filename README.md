@@ -100,7 +100,7 @@ nginx -t && systemctl reload nginx
 ## 🔐 Tilgang
 
 - **URL**: https://nrjmorgen.com/kloakontroll
-- **Passord**: `kloakontroll2026`
+- **Passord**: ``
 
 ## 📝 Viktig
 
