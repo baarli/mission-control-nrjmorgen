@@ -11,6 +11,8 @@ Dette er en komplett deploy-pakke for Mission Control dashboard.
 - `api/requirements.txt` - Python avhengigheter
 - `deploy-to-nrjmorgen.sh` - Automatisk deploy-script
 
+Opprett `/etc/nrj-mission-control.env` på serveren med eier `root` og rettigheter `0600`. Sett `SUPABASE_SECRET_KEY` der, eller `SUPABASE_SERVICE_ROLE_KEY` hvis miljøet fortsatt bruker JWT-nøkkel. Systemd leser filen når tjenesten starter. Verdiene må heller aldri ligge i frontend eller Git.
+
 ## 🚀 Deploy-metoder
 
 ### Metode 1: Automatisk deploy (Anbefalt)
@@ -40,6 +42,7 @@ cp manifest.json /var/www/nrjmorgen.com/kloakontroll/
 
 # Kopier backend
 cp api/backend-v2.py /var/www/nrjmorgen.com/kloakontroll/api/
+cp api/supabase_config.py /var/www/nrjmorgen.com/kloakontroll/api/
 cp api/requirements.txt /var/www/nrjmorgen.com/kloakontroll/api/
 ```
 
@@ -80,6 +83,7 @@ After=network.target
 
 [Service]
 Type=simple
+EnvironmentFile=/etc/nrj-mission-control.env
 WorkingDirectory=/var/www/nrjmorgen.com/kloakontroll/api
 ExecStart=/usr/bin/python3 backend-v2.py
 Restart=always

@@ -12,6 +12,8 @@ from datetime import datetime
 from http.server import HTTPServer, BaseHTTPRequestHandler
 import urllib.parse
 
+from supabase_config import supabase_headers
+
 WORKSPACE = "/root/.openclaw/workspace"
 SCRIPTS_DIR = f"{WORKSPACE}/scripts"
 API_PORT = 8081
@@ -232,7 +234,6 @@ class APIHandler(BaseHTTPRequestHandler):
             import urllib.request
             
             SUPABASE_URL = 'https://kvniauxokdtmpvjtfnej.supabase.co'
-            SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imt2bmlhdXhva2R0bXB2anRmbmVqIiwicm9sZSI6InNlcnZpY2Vfcm9sZSIsImlhdCI6MTc1MTM2NzIzNCwiZXhwIjoyMDY2OTQzMjM0fQ.OkhTtq9QAQ3xMzZYKyWyCjj7PiqMZJKSvpA0jcBJqpE'
             TENANT_ID = 'a0000000-0000-0000-0000-000000000001'
             
             today = datetime.now().strftime('%Y-%m-%d')
@@ -240,10 +241,7 @@ class APIHandler(BaseHTTPRequestHandler):
             req = urllib.request.Request(
                 f"{SUPABASE_URL}/rest/v1/agenda_items?tenant_id=eq.{TENANT_ID}&show_date=eq.{today}",
                 method='DELETE',
-                headers={
-                    'apikey': SUPABASE_KEY,
-                    'Authorization': f'Bearer {SUPABASE_KEY}'
-                }
+                headers=supabase_headers()
             )
             
             with urllib.request.urlopen(req, timeout=30) as response:
@@ -258,17 +256,13 @@ class APIHandler(BaseHTTPRequestHandler):
             import urllib.request
             
             SUPABASE_URL = 'https://kvniauxokdtmpvjtfnej.supabase.co'
-            SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imt2bmlhdXhva2R0bXB2anRmbmVqIiwicm9sZSI6InNlcnZpY2Vfcm9sZSIsImlhdCI6MTc1MTM2NzIzNCwiZXhwIjoyMDY2OTQzMjM0fQ.OkhTtq8QAQ3xMzZYKyWyCjj7PiqMZJKSvpA0jcBJqpE'
             TENANT_ID = 'a0000000-0000-0000-0000-000000000001'
             
             today = datetime.now().strftime('%Y-%m-%d')
             
             req = urllib.request.Request(
                 f"{SUPABASE_URL}/rest/v1/agenda_items?tenant_id=eq.{TENANT_ID}&show_date=eq.{today}&order=order_index.asc",
-                headers={
-                    'apikey': SUPABASE_KEY,
-                    'Authorization': f'Bearer {SUPABASE_KEY}'
-                }
+                headers=supabase_headers()
             )
             
             with urllib.request.urlopen(req, timeout=30) as response:
@@ -285,15 +279,11 @@ class APIHandler(BaseHTTPRequestHandler):
             import urllib.request
             
             SUPABASE_URL = 'https://kvniauxokdtmpvjtfnej.supabase.co'
-            SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imt2bmlhdXhva2R0bXB2anRmbmVqIiwicm9sZSI6InNlcnZpY2Vfcm9sZSIsImlhdCI6MTc1MTM2NzIzNCwiZXhwIjoyMDY2OTQzMjM0fQ.OkhTtq8QAQ3xMzZYKyWyCjj7PiqMZJKSvpA0jcBJqpE'
             
             req = urllib.request.Request(
                 f"{SUPABASE_URL}/rest/v1/agenda_items?id=eq.{sak_id}",
                 method='DELETE',
-                headers={
-                    'apikey': SUPABASE_KEY,
-                    'Authorization': f'Bearer {SUPABASE_KEY}'
-                }
+                headers=supabase_headers()
             )
             
             with urllib.request.urlopen(req, timeout=30) as response:

@@ -15,9 +15,10 @@ from datetime import datetime, timedelta
 from http.server import HTTPServer, BaseHTTPRequestHandler
 import ssl
 
+from supabase_config import supabase_headers
+
 # Konfigurasjon
 SUPABASE_URL = 'https://kvniauxokdtmpvjtfnej.supabase.co'
-SUPABASE_SERVICE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imt2bmlhdXhva2R0bXB2anRmbmVqIiwicm9sZSI6InNlcnZpY2Vfcm9sZSIsImlhdCI6MTc1MTM2NzIzNCwiZXhwIjoyMDY2OTQzMjM0fQ.OkhTtq9QAQ3xMzZYKyWyCjj7PiqMZJKSvpA0jcBJqpE'
 TENANT_ID = 'a0000000-0000-0000-0000-000000000001'
 API_PORT = 8081
 WORKSPACE = "/root/.openclaw/workspace"
@@ -26,7 +27,6 @@ SCRIPTS_DIR = f"{WORKSPACE}/scripts"
 class SupabaseClient:
     def __init__(self):
         self.base_url = SUPABASE_URL
-        self.api_key = SUPABASE_SERVICE_KEY
     
     def request(self, endpoint, method='GET', data=None, params=None):
         url = f"{self.base_url}/rest/v1{endpoint}"
@@ -34,8 +34,7 @@ class SupabaseClient:
             url += '?' + urllib.parse.urlencode(params)
         
         headers = {
-            'apikey': self.api_key,
-            'Authorization': f'Bearer {self.api_key}',
+            **supabase_headers(),
             'Content-Type': 'application/json',
             'Prefer': 'return=representation'
         }

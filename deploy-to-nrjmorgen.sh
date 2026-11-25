@@ -11,6 +11,11 @@ echo "=========================================================="
 DEPLOY_DIR="/var/www/nrjmorgen.com/kloakontroll"
 API_PORT=8081
 
+if [ ! -r /etc/nrj-mission-control.env ]; then
+    echo "Configure /etc/nrj-mission-control.env before deployment." >&2
+    exit 1
+fi
+
 echo ""
 echo "1. Lager deploy-mappe..."
 mkdir -p $DEPLOY_DIR
@@ -22,6 +27,7 @@ cp /root/.openclaw/workspace/mission-control/public/manifest.json $DEPLOY_DIR/ 2
 
 echo "3. Kopierer API filer..."
 cp /root/.openclaw/workspace/mission-control/api/backend-v2.py $DEPLOY_DIR/api/
+cp /root/.openclaw/workspace/mission-control/api/supabase_config.py $DEPLOY_DIR/api/
 cp /root/.openclaw/workspace/mission-control/api/requirements.txt $DEPLOY_DIR/api/
 
 echo "4. Setter opp API service..."
@@ -36,7 +42,7 @@ User=www-data
 WorkingDirectory=/var/www/nrjmorgen.com/kloakontroll/api
 Environment="PATH=/usr/local/bin:/usr/bin"
 Environment="SUPABASE_URL=https://kvniauxokdtmpvjtfnej.supabase.co"
-Environment="SUPABASE_KEY=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imt2bmlhdXhva2R0bXB2anRmbmVqIiwicm9sZSI6InNlcnZpY2Vfcm9sZSIsImlhdCI6MTc1MTM2NzIzNCwiZXhwIjoyMDY2OTQzMjM0fQ.OkhTtq9QAQ3xMzZYKyWyCjj7PiqMZJKSvpA0jcBJqpE"
+EnvironmentFile=/etc/nrj-mission-control.env
 Environment="TENANT_ID=a0000000-0000-0000-0000-000000000001"
 ExecStart=/usr/bin/python3 backend-v2.py
 Restart=always
