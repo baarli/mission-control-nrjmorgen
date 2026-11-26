@@ -4,6 +4,43 @@
 
 set -e
 
+SCRIPT_DIR="$(CDPATH= cd -- "$(dirname -- "${BASH_SOURCE[0]}")" && pwd)"
+
+stage_checkout() {
+    local destination="$1"
+    local source_file
+    local -a frontend_files=(
+        "$SCRIPT_DIR/index.html"
+        "$SCRIPT_DIR/manifest.json"
+        "$SCRIPT_DIR/supabase-integration.js"
+    )
+    local -a api_files=(
+        "$SCRIPT_DIR/api/backend-v2.py"
+        "$SCRIPT_DIR/api/supabase_config.py"
+        "$SCRIPT_DIR/api/requirements.txt"
+    )
+
+    for source_file in "${frontend_files[@]}" "${api_files[@]}"; do
+        if [[ ! -f "$source_file" || ! -r "$source_file" ]]; then
+            printf 'Missing or unreadable checkout file: %s\n' "$source_file" >&2
+            return 1
+        fi
+    done
+
+    mkdir -p -- "$destination/api"
+    cp -- "${frontend_files[@]}" "$destination/"
+    cp -- "${api_files[@]}" "$destination/api/"
+}
+
+if [[ "${1:-}" == "--stage-only" ]]; then
+    if [[ $# -ne 2 || -z "$2" ]]; then
+        echo "Usage: bash deploy-to-nrjmorgen.sh --stage-only DIRECTORY" >&2
+        exit 2
+    fi
+    stage_checkout "$2"
+    exit 0
+fi
+
 echo "🚀 Mission Control Deploy til nrjmorgen.com/kloakontroll"
 echo "=========================================================="
 
@@ -17,20 +54,10 @@ if [ ! -r /etc/nrj-mission-control.env ]; then
 fi
 
 echo ""
-echo "1. Lager deploy-mappe..."
-mkdir -p $DEPLOY_DIR
-mkdir -p $DEPLOY_DIR/api
+echo "1. Klargjør filer fra checkouten..."
+stage_checkout "$DEPLOY_DIR"
 
-echo "2. Kopierer frontend filer..."
-cp /root/.openclaw/workspace/mission-control/public/index.html $DEPLOY_DIR/
-cp /root/.openclaw/workspace/mission-control/public/manifest.json $DEPLOY_DIR/ 2>/dev/null || echo "{}" > $DEPLOY_DIR/manifest.json
-
-echo "3. Kopierer API filer..."
-cp /root/.openclaw/workspace/mission-control/api/backend-v2.py $DEPLOY_DIR/api/
-cp /root/.openclaw/workspace/mission-control/api/supabase_config.py $DEPLOY_DIR/api/
-cp /root/.openclaw/workspace/mission-control/api/requirements.txt $DEPLOY_DIR/api/
-
-echo "4. Setter opp API service..."
+echo "2. Setter opp API service..."
 cat > /etc/systemd/system/mission-control-api.service << 'EOF'
 [Unit]
 Description=Mission Control API
@@ -52,7 +79,7 @@ RestartSec=5
 WantedBy=multi-user.target
 EOF
 
-echo "5. Konfigurerer nginx..."
+echo "3. Konfigurerer nginx..."
 cat > /etc/nginx/sites-available/nrjmorgen-kloakontroll << 'EOF'
 server {
     listen 80;
@@ -94,11 +121,11 @@ server {
 }
 EOF
 
-echo "6. Aktiverer nginx config..."
+echo "4. Aktiverer nginx config..."
 ln -sf /etc/nginx/sites-available/nrjmorgen-kloakontroll /etc/nginx/sites-enabled/
 nginx -t && systemctl reload nginx
 
-echo "7. Starter API service..."
+echo "5. Starter API service..."
 systemctl daemon-reload
 systemctl enable mission-control-api
 systemctl start mission-control-api
