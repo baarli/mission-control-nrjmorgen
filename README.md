@@ -13,6 +13,12 @@ Dette er en komplett deploy-pakke for Mission Control dashboard.
 
 Opprett `/etc/nrj-mission-control.env` på serveren med eier `root` og rettigheter `0600`. Sett `SUPABASE_SECRET_KEY` der, eller `SUPABASE_SERVICE_ROLE_KEY` hvis miljøet fortsatt bruker JWT-nøkkel. Systemd leser filen når tjenesten starter. Verdiene må heller aldri ligge i frontend eller Git.
 
+### Driftsstatus i frontend
+
+Oversikten viser ubekreftet status for tjenester og planlagte jobber. Morgenrutinen er utilgjengelig i den statiske visningen. Driftsbevis krever at helseendepunktet svarer med forventet JSON og at jobbens status kommer fra jobbens eget kjøringssignal.
+
+Kjør statustestene lokalt med `node --test tests/operator-status.test.mjs`.
+
 ## 🚀 Deploy-metoder
 
 ### Metode 1: Automatisk deploy (Anbefalt)
