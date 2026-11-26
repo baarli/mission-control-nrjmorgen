@@ -112,6 +112,8 @@ nginx -t && systemctl reload nginx
 - **URL**: https://nrjmorgen.com/kloakontroll
 - **Passord**: ``
 
+Deploy-scriptet skriver publiseringsadresse og status. Tilgangsdetaljer håndteres på verten.
+
 ## 📝 Viktig
 
 - Frontend er en SPA (Single Page Application) med hash-routing
