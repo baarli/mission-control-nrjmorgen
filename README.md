@@ -87,6 +87,10 @@ location /kloakontroll/api/ {
 }
 ```
 
+V2 forventer at forespørsler kommer inn med prefikset `/api/`. Proxyen
+ovenfor fjerner hele prefikset `/kloakontroll/api/`. Før videreruting til
+v2-rutene aktiveres, må vertens tilgangskontroll for API-et være verifisert.
+
 #### Steg 4: Start API
 ```bash
 # Lag systemd service
@@ -138,6 +142,10 @@ Deploy-scriptet skriver publiseringsadresse og status. Tilgangsdetaljer håndter
 ```bash
 curl http://localhost:8081/api/health
 ```
+
+Ved vellykket lokal sjekk svarer v2 med JSON der `status` er `ok`.
+Ukjente GET- og POST-ruter gir HTTP 404. Test rutingen uten en kjørende
+tjeneste med `python3 -B -m unittest discover -s tests -p test_api_routing.py`.
 
 ### Sjekk nginx config
 ```bash
