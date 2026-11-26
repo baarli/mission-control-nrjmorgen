@@ -28,14 +28,17 @@ morning_routine_status = {
 }
 
 class APIHandler(BaseHTTPRequestHandler):
-    def do_GET(self):
-        parsed_path = urllib.parse.urlparse(self.path)
-        path = parsed_path.path
-        
-        self.send_response(200)
+    def _send_json(self, response, status=200):
+        body = json.dumps(response).encode()
+        self.send_response(status)
         self.send_header('Content-Type', 'application/json')
         self.send_header('Access-Control-Allow-Origin', '*')
         self.end_headers()
+        self.wfile.write(body)
+
+    def do_GET(self):
+        parsed_path = urllib.parse.urlparse(self.path)
+        path = parsed_path.path
         
         if path == '/api/status':
             response = self.get_status()
@@ -52,9 +55,10 @@ class APIHandler(BaseHTTPRequestHandler):
         elif path == '/api/saker':
             response = self.get_saker()
         else:
-            response = {'error': 'Not found'}
+            self._send_json({'error': 'Not found'}, status=404)
+            return
         
-        self.wfile.write(json.dumps(response).encode())
+        self._send_json(response)
     
     def do_POST(self):
         parsed_path = urllib.parse.urlparse(self.path)
@@ -69,11 +73,6 @@ class APIHandler(BaseHTTPRequestHandler):
             except:
                 pass
         
-        self.send_response(200)
-        self.send_header('Content-Type', 'application/json')
-        self.send_header('Access-Control-Allow-Origin', '*')
-        self.end_headers()
-        
         if path == '/api/control':
             response = self.control_automation(data.get('name'), data.get('action'))
         elif path == '/api/routine/morning':
@@ -81,9 +80,10 @@ class APIHandler(BaseHTTPRequestHandler):
         elif path == '/api/saker/delete':
             response = self.delete_saker(data.get('id'))
         else:
-            response = {'error': 'Not found'}
+            self._send_json({'error': 'Not found'}, status=404)
+            return
         
-        self.wfile.write(json.dumps(response).encode())
+        self._send_json(response)
     
     def do_OPTIONS(self):
         self.send_response(200)
