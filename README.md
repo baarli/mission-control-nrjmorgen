@@ -7,7 +7,9 @@ Dette er en komplett deploy-pakke for Mission Control dashboard.
 ### Filer
 - `index.html` - Frontend (120KB SPA)
 - `manifest.json` - PWA manifest
+- `supabase-integration.js` - Dataintegrasjon for frontend
 - `api/backend-v2.py` - Backend API
+- `api/supabase_config.py` - Backendens Supabase-konfigurasjon
 - `api/requirements.txt` - Python avhengigheter
 - `deploy-to-nrjmorgen.sh` - Automatisk deploy-script
 
@@ -35,6 +37,11 @@ cd /tmp/mission-control-deploy
 bash deploy-to-nrjmorgen.sh
 ```
 
+Deployskriptet bruker filene i samme checkout som skriptet. Kjør
+`bash deploy-to-nrjmorgen.sh --stage-only <lokal mappe>` for å kontrollere
+filpakken lokalt uten å endre vertskonfigurasjon eller starte tjenester.
+Kjør `node --test tests/deploy-staging.test.mjs` for å kontrollere kopieringen med testfiler.
+
 ### Metode 2: Manuell deploy
 
 #### Steg 1: Kopier filer
@@ -45,6 +52,7 @@ mkdir -p /var/www/nrjmorgen.com/kloakontroll/api
 # Kopier frontend
 cp index.html /var/www/nrjmorgen.com/kloakontroll/
 cp manifest.json /var/www/nrjmorgen.com/kloakontroll/
+cp supabase-integration.js /var/www/nrjmorgen.com/kloakontroll/
 
 # Kopier backend
 cp api/backend-v2.py /var/www/nrjmorgen.com/kloakontroll/api/
