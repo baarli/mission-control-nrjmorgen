@@ -526,52 +526,22 @@
                         </div>
                         
                         <div class="stat-card">
-                            <div class="stat-value" style="color: #000000;">●</div>
+                            <div class="stat-value" style="color: var(--text-primary);">●</div>
                             <div class="stat-label">TikTok</div>
                         </div>
                     </div>
 
                     <div class="card">
                         <div class="card-header" style="display: flex; justify-content: space-between; align-items: center;">
-                            <div class="card-title">Innleggsplanlegger</div>
+                            <div class="card-title">Lokale utkast</div>
                             <button class="btn btn-primary" onclick="socialManager.createPost()">
-                                <i class="fas fa-plus"></i> Nytt innlegg
+                                <i class="fas fa-plus"></i> Nytt utkast
                             </button>
                         </div>
-                        
-                        <div id="scheduled-posts">
-                            <div class="list-item">
-                                <div style="width: 40px; height: 40px; background: linear-gradient(135deg, #E4405F 0%, #F77737 100%); border-radius: 50%; display: flex; align-items: center; justify-content: center;">
-                                    <i class="fab fa-instagram" style="color: white;"></i>
-                                </div>
-                                <div style="flex: 1;">
-                                    <div style="font-weight: 600;">Ny episode ute nå!</div>
-                                    <div class="text-muted" style="font-size: 0.875rem;">Instagram • Planlagt: I dag 15:00</div>
-                                </div>
-                                <span class="badge badge-info">Venter</span>
-                            </div>
-                            
-                            <div class="list-item">
-                                <div style="width: 40px; height: 40px; background: #1DA1F2; border-radius: 50%; display: flex; align-items: center; justify-content: center;">
-                                    <i class="fab fa-twitter" style="color: white;"></i>
-                                </div>
-                                <div style="flex: 1;">
-                                    <div style="font-weight: 600;">Hvilken deltaker er din favoritt?</div>
-                                    <div class="text-muted" style="font-size: 0.875rem;">Twitter • Planlagt: I morgen 09:00</div>
-                                </div>
-                                <span class="badge badge-info">Venter</span>
-                            </div>
-                            
-                            <div class="list-item">
-                                <div style="width: 40px; height: 40px; background: #000; border-radius: 50%; display: flex; align-items: center; justify-content: center;">
-                                    <i class="fab fa-tiktok" style="color: white;"></i>
-                                </div>
-                                <div style="flex: 1;">
-                                    <div style="font-weight: 600;">Podcast-klipp: Gameboy på sofaen</div>
-                                    <div class="text-muted" style="font-size: 0.875rem;">TikTok • Planlagt: 26. feb 12:00</div>
-                                </div>
-                                <span class="badge badge-info">Venter</span>
-                            </div>
+
+                        <p class="text-secondary" style="margin-bottom: 1rem;">Utkastene finnes i denne fanen frem til siden lastes på nytt.</p>
+                        <div id="social-drafts">
+                            <p class="text-secondary" style="padding: 1rem;">Ingen lokale utkast.</p>
                         </div>
                     </div>
                     
@@ -582,15 +552,15 @@
                         <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 1rem;">
                             <div style="background: var(--bg-tertiary); padding: 1rem; border-radius: 0.75rem; cursor: pointer;" onclick="socialManager.useTemplate('episode')">
                                 <div style="font-weight: 600; margin-bottom: 0.5rem;">🎧 Ny episode</div>
-                                <div class="text-muted" style="font-size: 0.875rem;">"Ny episode av {{podcast}} ute nå! 🎉 Lytt her: {{link}}"</div>
+                                <div class="text-secondary" style="font-size: 0.875rem;">"Ny episode av {{podcast}} ute nå! 🎉 Lytt her: {{link}}"</div>
                             </div>
                             <div style="background: var(--bg-tertiary); padding: 1rem; border-radius: 0.75rem; cursor: pointer;" onclick="socialManager.useTemplate('question')">
                                 <div style="font-weight: 600; margin-bottom: 0.5rem;">❓ Spørsmål</div>
-                                <div class="text-muted" style="font-size: 0.875rem;">"Hva synes du om {{topic}}? Del meningene dine! 👇"</div>
+                                <div class="text-secondary" style="font-size: 0.875rem;">"Hva synes du om {{topic}}? Del meningene dine! 👇"</div>
                             </div>
                             <div style="background: var(--bg-tertiary); padding: 1rem; border-radius: 0.75rem; cursor: pointer;" onclick="socialManager.useTemplate('poll')">
                                 <div style="font-weight: 600; margin-bottom: 0.5rem;">📊 Avstemning</div>
-                                <div class="text-muted" style="font-size: 0.875rem;">"Hvem vinner {{show}}? A) X B) Y C) Z"</div>
+                                <div class="text-secondary" style="font-size: 0.875rem;">"Hvem vinner {{show}}? A) X B) Y C) Z"</div>
                             </div>
                         </div>
                     </div>
@@ -763,7 +733,7 @@
                             <div style="background: var(--bg-tertiary); padding: 1.5rem; border-radius: 0.75rem; cursor: pointer; transition: all 0.2s ease;" onmouseover="this.style.transform='translateY(-4px)'" onmouseout="this.style.transform='translateY(0)'" onclick="exportManager.exportJSON()">
                                 <div style="font-size: 2rem; margin-bottom: 0.5rem;">📋</div>
                                 <div style="font-weight: 600; margin-bottom: 0.25rem;">JSON</div>
-                                <div class="text-secondary" style="font-size: 0.875rem;">Kalender og innlegg i denne visningen</div>
+                                <div class="text-secondary" style="font-size: 0.875rem;">Kalender og lokale utkast i denne visningen</div>
                             </div>
                             
                             <div style="background: var(--bg-tertiary); padding: 1.5rem; border-radius: 0.75rem; cursor: pointer; transition: all 0.2s ease;" onmouseover="this.style.transform='translateY(-4px)'" onmouseout="this.style.transform='translateY(0)'" onclick="exportManager.exportCSV()">
@@ -781,7 +751,7 @@
                             <div style="background: var(--bg-tertiary); padding: 1.5rem; border-radius: 0.75rem; cursor: pointer; transition: all 0.2s ease;" onmouseover="this.style.transform='translateY(-4px)'" onmouseout="this.style.transform='translateY(0)'" onclick="exportManager.exportViewData()">
                                 <div style="font-size: 2rem; margin-bottom: 0.5rem;">📦</div>
                                 <div style="font-weight: 600; margin-bottom: 0.25rem;">Visningsdata (JSON)</div>
-                                <div class="text-secondary" style="font-size: 0.875rem;">Kalender, innlegg og testresultater</div>
+                                <div class="text-secondary" style="font-size: 0.875rem;">Kalender, lokale utkast og testresultater</div>
                             </div>
                         </div>
                     </div>
@@ -1339,8 +1309,13 @@
         // Social Media Manager
         class SocialMediaManager {
             constructor() {
-                this.platforms = ['twitter', 'instagram', 'youtube', 'tiktok'];
-                this.scheduledPosts = [];
+                this.platforms = {
+                    twitter: { name: 'Twitter', icon: 'fa-twitter', color: '#1DA1F2' },
+                    instagram: { name: 'Instagram', icon: 'fa-instagram', color: '#E4405F' },
+                    youtube: { name: 'YouTube', icon: 'fa-youtube', color: '#FF0000' },
+                    tiktok: { name: 'TikTok', icon: 'fa-tiktok', color: '#000000' }
+                };
+                this.drafts = [];
                 this.templates = {
                     episode: 'Ny episode av {{podcast}} ute nå! 🎉 Lytt her: {{link}}',
                     question: 'Hva synes du om {{topic}}? Del meningene dine! 👇',
@@ -1350,28 +1325,29 @@
             
             createPost() {
                 const content = prompt('Skriv innleggstekst:');
-                if (!content) return;
-                
-                const platform = prompt('Velg plattform (twitter/instagram/youtube/tiktok):', 'instagram');
-                if (!platform || !this.platforms.includes(platform.toLowerCase())) {
+                if (content?.trim()) this.addDraft(content);
+            }
+
+            addDraft(content) {
+                const platform = prompt('Velg plattform (twitter/instagram/youtube/tiktok):', 'instagram')?.trim().toLowerCase();
+                if (!platform) return;
+                if (!Object.hasOwn(this.platforms, platform)) {
                     alert('Ugyldig plattform');
                     return;
                 }
-                
-                const when = prompt('Når skal det publiseres? (YYYY-MM-DD HH:MM)', new Date().toISOString().slice(0, 16).replace('T', ' '));
-                if (!when) return;
-                
-                const post = {
+
+                const desiredTime = prompt('Ønsket tidspunkt (YYYY-MM-DD HH:MM):', new Date().toISOString().slice(0, 16).replace('T', ' '));
+                if (!desiredTime?.trim()) return;
+
+                this.drafts.push({
                     id: Date.now(),
-                    content: content,
-                    platform: platform.toLowerCase(),
-                    scheduledTime: new Date(when),
-                    status: 'pending'
-                };
-                
-                this.scheduledPosts.push(post);
-                this.renderPosts();
-                alert(`Innlegg planlagt for ${when}`);
+                    content,
+                    platform,
+                    desiredTime,
+                    status: 'draft'
+                });
+                this.renderDrafts();
+                alert('Lokalt utkast lagt til i denne fanen.');
             }
             
             useTemplate(templateName) {
@@ -1383,70 +1359,56 @@
                 // Replace placeholders
                 if (templateName === 'episode') {
                     const podcast = prompt('Podcast navn:', 'Baarli og Benjamin går i terapi');
+                    if (!podcast?.trim()) return;
                     const link = prompt('Lenke:', 'https://podcast.nrjmorgen.no');
-                    content = content.replace('{{podcast}}', podcast).replace('{{link}}', link);
+                    if (!link?.trim()) return;
+                    content = content.replace(/\{\{(podcast|link)\}\}/g, (_placeholder, field) => field === 'podcast' ? podcast : link);
                 } else if (templateName === 'question') {
                     const topic = prompt('Tema:', 'dagens episode');
-                    content = content.replace('{{topic}}', topic);
+                    if (!topic?.trim()) return;
+                    content = content.replace('{{topic}}', () => topic);
                 } else if (templateName === 'poll') {
                     const show = prompt('Program:', 'Farmen');
-                    content = content.replace('{{show}}', show);
+                    if (!show?.trim()) return;
+                    content = content.replace('{{show}}', () => show);
                 }
-                
-                const platform = prompt('Velg plattform:', 'instagram');
-                const when = prompt('Når skal det publiseres?', new Date().toISOString().slice(0, 16).replace('T', ' '));
-                
-                if (platform && when) {
-                    this.scheduledPosts.push({
-                        id: Date.now(),
-                        content: content,
-                        platform: platform.toLowerCase(),
-                        scheduledTime: new Date(when),
-                        status: 'pending'
-                    });
-                    this.renderPosts();
-                    alert('Mal brukt og innlegg planlagt!');
-                }
+
+                this.addDraft(content);
             }
-            
-            renderPosts() {
-                const container = document.getElementById('scheduled-posts');
+
+            renderDrafts() {
+                const container = document.getElementById('social-drafts');
                 if (!container) return;
-                
-                if (this.scheduledPosts.length === 0) {
-                    container.innerHTML = '<div class="text-muted" style="padding: 1rem;">Ingen planlagte innlegg</div>';
-                    return;
+
+                container.replaceChildren();
+                for (const draft of this.drafts) {
+                    const platform = this.platforms[draft.platform];
+                    const row = document.createElement('div');
+                    row.className = 'list-item';
+                    const avatar = document.createElement('div');
+                    avatar.style.cssText = `width: 40px; height: 40px; flex-shrink: 0; background: ${platform.color}; border-radius: 50%; display: flex; align-items: center; justify-content: center;`;
+                    const icon = document.createElement('i');
+                    icon.className = `fab ${platform.icon}`;
+                    icon.style.color = 'white';
+                    avatar.append(icon);
+
+                    const details = document.createElement('div');
+                    details.style.cssText = 'flex: 1; min-width: 0;';
+                    const copy = document.createElement('div');
+                    copy.style.cssText = 'font-weight: 600; white-space: pre-wrap; overflow-wrap: anywhere;';
+                    copy.textContent = draft.content;
+                    const time = document.createElement('div');
+                    time.className = 'text-secondary';
+                    time.style.fontSize = '0.875rem';
+                    time.textContent = `${platform.name} · Ønsket tidspunkt ${draft.desiredTime}`;
+                    details.append(copy, time);
+
+                    const status = document.createElement('span');
+                    status.className = 'badge text-secondary';
+                    status.textContent = 'Lokalt utkast';
+                    row.append(avatar, details, status);
+                    container.append(row);
                 }
-                
-                const platformIcons = {
-                    twitter: { icon: 'fa-twitter', color: '#1DA1F2' },
-                    instagram: { icon: 'fa-instagram', color: '#E4405F' },
-                    youtube: { icon: 'fa-youtube', color: '#FF0000' },
-                    tiktok: { icon: 'fa-tiktok', color: '#000000' }
-                };
-                
-                container.innerHTML = this.scheduledPosts.map(post => {
-                    const platform = platformIcons[post.platform] || { icon: 'fa-share', color: '#666' };
-                    const timeStr = post.scheduledTime.toLocaleString('no-NO', {
-                        day: 'numeric',
-                        month: 'short',
-                        hour: '2-digit',
-                        minute: '2-digit'
-                    });
-                    
-                    return `
-                        <div class="list-item">
-                            <div style="width: 40px; height: 40px; background: ${platform.color}; border-radius: 50%; display: flex; align-items: center; justify-content: center;">
-                                <i class="fab ${platform.icon}" style="color: white;"></i>
-                            </div>
-                            <div style="flex: 1;">
-                                <div style="font-weight: 600;">${post.content.substring(0, 50)}${post.content.length > 50 ? '...' : ''}</div>
-                                <div class="text-muted" style="font-size: 0.875rem;">${post.platform.charAt(0).toUpperCase() + post.platform.slice(1)} • Planlagt: ${timeStr}</div>
-                            </div>
-                            <span class="badge badge-info">Venter</span>
-                        </div>
-                    `;
-                }).join('');
             }
         }
         
@@ -1838,7 +1800,7 @@
             exportJSON() {
                 const data = {
                     calendar: calendar.calendarItems,
-                    social: socialManager.scheduledPosts,
+                    social: socialManager.drafts,
                     exportDate: new Date().toISOString(),
                     version: '3.2'
                 };
@@ -1886,7 +1848,7 @@
             exportViewData() {
                 const data = {
                     calendar: calendar.calendarItems,
-                    social: socialManager.scheduledPosts,
+                    social: socialManager.drafts,
                     testResults: testRunner.results,
                     exportDate: new Date().toISOString(),
                     version: '3.2'
