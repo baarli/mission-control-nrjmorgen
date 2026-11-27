@@ -738,23 +738,18 @@
                 <div id="export" class="section">
                     <div class="stats-grid">
                         <div class="stat-card">
-                            <div class="stat-value">5</div>
-                            <div class="stat-label">Eksport-formater</div>
+                            <div class="stat-value">3</div>
+                            <div class="stat-label">Filformater</div>
                         </div>
                         
                         <div class="stat-card">
                             <div class="stat-value" id="export-count">0</div>
-                            <div class="stat-label">Eksporteringer</div>
+                            <div class="stat-label">Eksportforsøk</div>
                         </div>
                         
                         <div class="stat-card">
                             <div class="stat-value" id="last-export">-</div>
-                            <div class="stat-label">Siste eksport</div>
-                        </div>
-                        
-                        <div class="stat-card">
-                            <div class="stat-value">✓</div>
-                            <div class="stat-label">Backup klar</div>
+                            <div class="stat-label">Siste eksportforsøk</div>
                         </div>
                     </div>
 
@@ -762,30 +757,31 @@
                         <div class="card-header">
                             <div class="card-title">Data Eksport</div>
                         </div>
+                        <p class="text-secondary" style="margin-bottom: 1rem;">Kalenderdataene i eksporten er eksempeldata.</p>
                         
                         <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1rem;">
                             <div style="background: var(--bg-tertiary); padding: 1.5rem; border-radius: 0.75rem; cursor: pointer; transition: all 0.2s ease;" onmouseover="this.style.transform='translateY(-4px)'" onmouseout="this.style.transform='translateY(0)'" onclick="exportManager.exportJSON()">
                                 <div style="font-size: 2rem; margin-bottom: 0.5rem;">📋</div>
                                 <div style="font-weight: 600; margin-bottom: 0.25rem;">JSON</div>
-                                <div class="text-muted" style="font-size: 0.875rem;">Komplett data i JSON-format</div>
+                                <div class="text-secondary" style="font-size: 0.875rem;">Kalender og innlegg i denne visningen</div>
                             </div>
                             
                             <div style="background: var(--bg-tertiary); padding: 1.5rem; border-radius: 0.75rem; cursor: pointer; transition: all 0.2s ease;" onmouseover="this.style.transform='translateY(-4px)'" onmouseout="this.style.transform='translateY(0)'" onclick="exportManager.exportCSV()">
                                 <div style="font-size: 2rem; margin-bottom: 0.5rem;">📊</div>
                                 <div style="font-weight: 600; margin-bottom: 0.25rem;">CSV</div>
-                                <div class="text-muted" style="font-size: 0.875rem;">Tabell-data for Excel</div>
+                                <div class="text-secondary" style="font-size: 0.875rem;">Kalendertabell for Excel</div>
                             </div>
                             
-                            <div style="background: var(--bg-tertiary); padding: 1.5rem; border-radius: 0.75rem; cursor: pointer; transition: all 0.2s ease;" onmouseover="this.style.transform='translateY(-4px)'" onmouseout="this.style.transform='translateY(0)'" onclick="exportManager.exportPDF()">
+                            <div style="background: var(--bg-tertiary); padding: 1.5rem; border-radius: 0.75rem; cursor: pointer; transition: all 0.2s ease;" onmouseover="this.style.transform='translateY(-4px)'" onmouseout="this.style.transform='translateY(0)'" onclick="exportManager.exportHTMLReport()">
                                 <div style="font-size: 2rem; margin-bottom: 0.5rem;">📄</div>
-                                <div style="font-weight: 600; margin-bottom: 0.25rem;">PDF Rapport</div>
-                                <div class="text-muted" style="font-size: 0.875rem;">Formell rapport (PDF)</div>
+                                <div style="font-weight: 600; margin-bottom: 0.25rem;">HTML-rapport</div>
+                                <div class="text-secondary" style="font-size: 0.875rem;">Kalenderrapport for nettleseren</div>
                             </div>
                             
-                            <div style="background: var(--bg-tertiary); padding: 1.5rem; border-radius: 0.75rem; cursor: pointer; transition: all 0.2s ease;" onmouseover="this.style.transform='translateY(-4px)'" onmouseout="this.style.transform='translateY(0)'" onclick="exportManager.exportAll()">
+                            <div style="background: var(--bg-tertiary); padding: 1.5rem; border-radius: 0.75rem; cursor: pointer; transition: all 0.2s ease;" onmouseover="this.style.transform='translateY(-4px)'" onmouseout="this.style.transform='translateY(0)'" onclick="exportManager.exportViewData()">
                                 <div style="font-size: 2rem; margin-bottom: 0.5rem;">📦</div>
-                                <div style="font-weight: 600; margin-bottom: 0.25rem;">Komplett Backup</div>
-                                <div class="text-muted" style="font-size: 0.875rem;">Alle data i ZIP</div>
+                                <div style="font-weight: 600; margin-bottom: 0.25rem;">Visningsdata (JSON)</div>
+                                <div class="text-secondary" style="font-size: 0.875rem;">Kalender, innlegg og testresultater</div>
                             </div>
                         </div>
                     </div>
@@ -795,7 +791,7 @@
                             <div class="card-title">Eksport-historikk</div>
                         </div>
                         <div id="export-history">
-                            <div class="text-muted" style="padding: 1rem;">Ingen eksporteringer ennå</div>
+                            <div class="text-secondary" style="padding: 1rem;">Ingen eksportforsøk ennå</div>
                         </div>
                     </div>
                 </div>
@@ -1860,12 +1856,11 @@
                 this.logExport('CSV');
             }
             
-            exportPDF() {
-                // Create a simple HTML report for PDF
+            exportHTMLReport() {
                 const report = `
                     <h1>Mission Control Rapport</h1>
                     <p>Generert: ${new Date().toLocaleString('no-NO')}</p>
-                    <h2>Kalender-data</h2>
+                    <h2>Eksempelkalender</h2>
                     <table border="1" cellpadding="5">
                         <tr><th>Tittel</th><th>Kategori</th><th>Dato</th><th>Score</th></tr>
                         ${calendar.calendarItems.map(item => `
@@ -1881,10 +1876,10 @@
                 
                 const blob = new Blob([report], { type: 'text/html' });
                 this.downloadFile(blob, `mission-control-rapport-${new Date().toISOString().split('T')[0]}.html`);
-                this.logExport('PDF/HTML');
+                this.logExport('HTML-rapport');
             }
             
-            exportAll() {
+            exportViewData() {
                 const data = {
                     calendar: calendar.calendarItems,
                     social: socialManager.scheduledPosts,
@@ -1894,8 +1889,8 @@
                 };
                 
                 const jsonBlob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
-                this.downloadFile(jsonBlob, `mission-control-full-backup-${new Date().toISOString().split('T')[0]}.json`);
-                this.logExport('Full Backup');
+                this.downloadFile(jsonBlob, `mission-control-view-data-${new Date().toISOString().split('T')[0]}.json`);
+                this.logExport('Visningsdata (JSON)');
             }
             
             downloadFile(blob, filename) {
@@ -1936,12 +1931,17 @@
                 
                 const historyContainer = document.getElementById('export-history');
                 if (this.exportHistory.length > 0) {
+                    const previousLabels = new Map([
+                        ['PDF/HTML', 'HTML-rapport'],
+                        ['Full Backup', 'Visningsdata (JSON)'],
+                    ]);
                     historyContainer.innerHTML = this.exportHistory.map(h => {
                         const date = new Date(h.date);
+                        const format = previousLabels.get(h.format) ?? h.format;
                         return `
                             <div class="list-item">
                                 <div style="flex: 1;">
-                                    <div style="font-weight: 600;">${h.format}</div>
+                                    <div style="font-weight: 600;">${format}</div>
                                     <div class="text-muted" style="font-size: 0.875rem;">${date.toLocaleString('no-NO')}</div>
                                 </div>
                             </div>

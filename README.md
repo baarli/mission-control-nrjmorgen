@@ -21,6 +21,8 @@ Oversikten viser ubekreftet status for tjenester og planlagte jobber. Morgenruti
 
 Dagens saker, podkasttall og episoder vises som ubekreftet i den statiske visningen.
 
+Eksportpanelet tilbyr lokale nedlastinger i JSON-, CSV- og HTML-format. Kalenderdataene er eksempeldata. Eksporthistorikken teller forsøk på å starte en nedlasting i nettleseren.
+
 Kjør statustestene lokalt med `node --test tests/operator-status.test.mjs`.
 
 ## 🚀 Deploy-metoder
