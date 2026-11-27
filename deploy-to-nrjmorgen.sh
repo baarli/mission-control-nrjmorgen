@@ -2,9 +2,9 @@
 # Mission Control Deploy Script for nrjmorgen.com
 # Dette scriptet setter opp Mission Control på /kloakontroll
 
-set -e
+set -e -o pipefail
 
-SCRIPT_DIR="$(CDPATH= cd -- "$(dirname -- "${BASH_SOURCE[0]}")" && pwd)"
+SCRIPT_DIR="$(CDPATH='' cd -- "$(dirname -- "${BASH_SOURCE[0]}")" && pwd)"
 
 stage_checkout() {
     local destination="$1"
@@ -47,9 +47,43 @@ echo "=========================================================="
 # Konfigurasjon
 DEPLOY_DIR="/var/www/nrjmorgen.com/kloakontroll"
 API_PORT=8081
+API_SERVICE=mission-control-api.service
+
+require_inactive_api() {
+    local state
+    if ! state=$(systemctl show --property=LoadState --property=ActiveState "$API_SERVICE" | LC_ALL=C sort); then
+        echo 'Kunne ikke bekrefte tilstanden til Mission Control API. Deploy avbrutt.' >&2
+        return 1
+    fi
+    case "$state" in
+        $'ActiveState=inactive\nLoadState=not-found'|$'ActiveState=inactive\nLoadState=loaded') return 0 ;;
+        *) echo 'Deploy krever en bekreftet inaktiv eller manglende Mission Control API-tjeneste.' >&2
+           return 1 ;;
+    esac
+}
+
+wait_for_api() {
+    local attempt
+    for attempt in {1..10}; do
+        if systemctl is-active --quiet "$API_SERVICE" &&
+            curl --fail --silent --noproxy '*' --connect-timeout 1 --max-time 2 "http://127.0.0.1:$API_PORT/api/health" |
+                python3 -c 'import json, sys; sys.exit(json.load(sys.stdin).get("status") != "ok")' 2>/dev/null; then
+            return 0
+        fi
+        if (( attempt < 10 )); then sleep 1; fi
+    done
+    echo 'Mission Control API svarte ikke med bekreftet status på lokal helsesjekk.' >&2
+    return 1
+}
 
 if [ ! -r /etc/nrj-mission-control.env ]; then
     echo "Configure /etc/nrj-mission-control.env before deployment." >&2
+    exit 1
+fi
+
+require_inactive_api
+if ! command -v curl >/dev/null || ! command -v python3 >/dev/null; then
+    echo 'Lokal helsesjekk krever curl og python3. Deploy avbrutt.' >&2
     exit 1
 fi
 
@@ -121,18 +155,26 @@ server {
 }
 EOF
 
-echo "4. Aktiverer nginx config..."
+echo "4. Validerer nginx-konfigurasjonen..."
 ln -sf /etc/nginx/sites-available/nrjmorgen-kloakontroll /etc/nginx/sites-enabled/
-nginx -t && systemctl reload nginx
+if ! nginx -t; then
+    echo 'Nginx-konfigurasjonen bestod ikke testen. Deploy avbrutt.' >&2
+    exit 1
+fi
 
-echo "5. Starter API service..."
+echo "5. Starter og verifiserer API-tjenesten..."
 systemctl daemon-reload
-systemctl enable mission-control-api
-systemctl start mission-control-api
+require_inactive_api
+systemctl start "$API_SERVICE"
+wait_for_api
+
+echo "6. Laster nginx-konfigurasjonen på nytt..."
+systemctl reload nginx
+systemctl enable "$API_SERVICE"
 
 echo ""
-echo "✅ Mission Control deployet!"
-echo "   URL: https://nrjmorgen.com/kloakontroll"
+echo "✅ Lokal API-helsesjekk bestod. Nginx er lastet på nytt."
+echo "   Konfigurert URL: https://nrjmorgen.com/kloakontroll"
 echo "   API: http://localhost:8081"
 echo ""
 echo "Tilgang administreres på verten."

@@ -46,6 +46,8 @@ Deployskriptet bruker filene i samme checkout som skriptet. Kjør
 filpakken lokalt uten å endre vertskonfigurasjon eller starte tjenester.
 Kjør `node --test tests/deploy-staging.test.mjs` for å kontrollere kopieringen med testfiler.
 
+Bruk automatisk deploy for en manglende eller bekreftet inaktiv API-tjeneste. Skriptet validerer Nginx-konfigurasjonen og venter på en vellykket lokal API-helsesjekk før det laster Nginx på nytt. En aktiv tjeneste krever en egen, verifisert utrulling med vertens tilgangspolicy og gjeldende runtime. Ved feil etter filklargjøring kan filer eller en startet API-prosess ligge igjen for operatørgjennomgang.
+
 ### Metode 2: Manuell deploy
 
 #### Steg 1: Kopier filer
