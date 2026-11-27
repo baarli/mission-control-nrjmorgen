@@ -19,7 +19,7 @@ Opprett `/etc/nrj-mission-control.env` på serveren med eier `root` og rettighet
 
 Oversikten viser ubekreftet status for tjenester og planlagte jobber. Morgenrutinen er utilgjengelig i den statiske visningen. Driftsbevis krever at helseendepunktet svarer med forventet JSON og at jobbens status kommer fra jobbens eget kjøringssignal.
 
-Dagens saker vises som ubekreftet i den statiske visningen.
+Dagens saker, podkasttall og episoder vises som ubekreftet i den statiske visningen.
 
 Kjør statustestene lokalt med `node --test tests/operator-status.test.mjs`.
 

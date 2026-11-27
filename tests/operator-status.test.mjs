@@ -24,6 +24,14 @@ test('the daily agenda presents unknown status without verified agenda data', ()
   assert.doesNotMatch(section, /\b\d+ saker for \d{4}-\d{2}-\d{2}\b|class="list-item"/u);
 });
 
+test('the podcast panel indicates unknown metrics and episodes without verified data', () => {
+  const start = page.indexOf('<div id="podkast" class="section">');
+  assert.notEqual(start, -1);
+  const section = page.slice(start).split('<!-- SOCIAL MEDIA SECTION -->', 1)[0];
+  assert.ok(section.includes('Podkasttall og episoder er ubekreftet i denne visningen.'));
+  assert.doesNotMatch(section, /class="stat-value">\s*\d|class="list-item"/u);
+});
+
 test('the unavailable morning routine cannot report a successful start', () => {
   assert.ok(/<button\b[^>]*\bdisabled\b[^>]*>\s*<i[^>]*><\/i> Morgenrutine utilgjengelig/u.test(page),
     'the morning routine control must be disabled');

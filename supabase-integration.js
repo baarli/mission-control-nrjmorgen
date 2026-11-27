@@ -63,11 +63,6 @@ class SupabaseClient {
         };
     }
     
-    // Hent podkast-episoder
-    async getPodcastEpisodes() {
-        return this.fetch(`/podcast_episodes?order=published_at.desc&limit=20`);
-    }
-    
     // Slett en sak
     async deleteSak(id) {
         return this.fetch(`/agenda_items?id=eq.${id}`, {
@@ -190,48 +185,6 @@ class RealSakslisteManager {
     }
 }
 
-// Oppdatert Podkast-klasse med ekte data
-class RealPodcastManager {
-    constructor() {
-        this.episodes = [];
-        this.supabase = supabase;
-    }
-    
-    async init() {
-        await this.loadData();
-        this.render();
-    }
-    
-    async loadData() {
-        try {
-            // Hent fra Supabase hvis tabellen finnes, ellers bruk mock
-            this.episodes = await this.supabase.getPodcastEpisodes();
-        } catch (error) {
-            console.log('Podcast episodes not available in Supabase, using fallback');
-            this.episodes = this.getFallbackEpisodes();
-        }
-    }
-    
-    getFallbackEpisodes() {
-        return [
-            { title: 'Baarli og Benjamin går i terapi - Episode 1', date: '2026-03-01', duration: '45:30' },
-            { title: 'NRJ Morgen Podkast - Uke 9', date: '2026-03-02', duration: '32:15' }
-        ];
-    }
-    
-    render() {
-        const container = document.getElementById('podcast-episodes');
-        if (!container) return;
-        
-        container.innerHTML = this.episodes.map(ep => `
-            <div class="podcast-episode">
-                <div class="episode-title">${ep.title}</div>
-                <div class="episode-meta">${ep.date} • ${ep.duration || '45:00'}</div>
-            </div>
-        `).join('');
-    }
-}
-
 // Oppdatert Statistikk-klasse med ekte data
 class RealStatsManager {
     constructor() {
@@ -279,12 +232,10 @@ class RealStatsManager {
 document.addEventListener('DOMContentLoaded', () => {
     // Gjør tilgjengelig globalt
     window.sakslisteManager = new RealSakslisteManager();
-    window.podcastManager = new RealPodcastManager();
     window.statsManager = new RealStatsManager();
     window.supabase = supabase;
     
     // Initialiser
     window.sakslisteManager.init();
-    window.podcastManager.init();
     window.statsManager.init();
 });
