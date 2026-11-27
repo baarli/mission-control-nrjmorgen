@@ -16,6 +16,14 @@ test('operation panels present unknown status until telemetry is available', () 
   }
 });
 
+test('the daily agenda presents unknown status without verified agenda data', () => {
+  const start = page.indexOf('<div id="sakslista" class="section">');
+  assert.notEqual(start, -1);
+  const section = page.slice(start).split('<!-- PODKAST SECTION -->', 1)[0];
+  assert.ok(section.includes('Sakslisten er ubekreftet i denne visningen.'));
+  assert.doesNotMatch(section, /\b\d+ saker for \d{4}-\d{2}-\d{2}\b|class="list-item"/u);
+});
+
 test('the unavailable morning routine cannot report a successful start', () => {
   assert.ok(/<button\b[^>]*\bdisabled\b[^>]*>\s*<i[^>]*><\/i> Morgenrutine utilgjengelig/u.test(page),
     'the morning routine control must be disabled');
