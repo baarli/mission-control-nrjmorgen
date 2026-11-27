@@ -417,21 +417,21 @@
             <nav class="nav">
                 <div class="nav-section">
                     <div class="nav-section-title">Hovedmeny</div>
-                    <div class="nav-item"><a class="nav-link active" onclick="showSection('dashboard')"><i class="fas fa-home"></i><span>Dashboard</span></a></div>
-                    <div class="nav-item"><a class="nav-link" onclick="showSection('sakslista')"><i class="fas fa-list"></i><span>Sakslista</span></a></div>
-                    <div class="nav-item"><a class="nav-link" onclick="showSection('podkast')"><i class="fas fa-podcast"></i><span>Podkast</span></a></div>
+                    <div class="nav-item"><a class="nav-link active" data-section="dashboard" onclick="showSection(this.dataset.section)"><i class="fas fa-home"></i><span>Dashboard</span></a></div>
+                    <div class="nav-item"><a class="nav-link" data-section="sakslista" onclick="showSection(this.dataset.section)"><i class="fas fa-list"></i><span>Sakslista</span></a></div>
+                    <div class="nav-item"><a class="nav-link" data-section="podkast" onclick="showSection(this.dataset.section)"><i class="fas fa-podcast"></i><span>Podkast</span></a></div>
                 </div>
                 
                 <div class="nav-section">
                     <div class="nav-section-title">Verktøy</div>
-                    <div class="nav-item"><a class="nav-link" onclick="showSection('calendar')"><i class="fas fa-calendar-alt"></i><span>Innholdskalender</span></a></div>
-                    <div class="nav-item"><a class="nav-link" onclick="showSection('social')"><i class="fas fa-share-alt"></i><span>Sosiale Medier</span></a></div>
-                    <div class="nav-item"><a class="nav-link" onclick="showSection('testing')"><i class="fas fa-vial"></i><span>Testing</span></a></div>
-                    <div class="nav-item"><a class="nav-link" onclick="showSection('voice')"><i class="fas fa-microphone"></i><span>Stemmestyring</span></a></div>
-                    <div class="nav-item"><a class="nav-link" onclick="showSection('export')"><i class="fas fa-file-export"></i><span>Eksport</span></a></div>
-                    <div class="nav-item"><a class="nav-link" onclick="showSection('ai')"><i class="fas fa-robot"></i><span>AI Assistent</span></a></div>
-                    <div class="nav-item"><a class="nav-link" onclick="showSection('cron')"><i class="fas fa-clock"></i><span>Cron Jobs</span></a></div>
-                    <div class="nav-item"><a class="nav-link" onclick="showSection('system')"><i class="fas fa-server"></i><span>System</span></a></div>
+                    <div class="nav-item"><a class="nav-link" data-section="calendar" onclick="showSection(this.dataset.section)"><i class="fas fa-calendar-alt"></i><span>Innholdskalender</span></a></div>
+                    <div class="nav-item"><a class="nav-link" data-section="social" onclick="showSection(this.dataset.section)"><i class="fas fa-share-alt"></i><span>Sosiale Medier</span></a></div>
+                    <div class="nav-item"><a class="nav-link" data-section="testing" onclick="showSection(this.dataset.section)"><i class="fas fa-vial"></i><span>Testing</span></a></div>
+                    <div class="nav-item"><a class="nav-link" data-section="voice" onclick="showSection(this.dataset.section)"><i class="fas fa-microphone"></i><span>Stemmestyring</span></a></div>
+                    <div class="nav-item"><a class="nav-link" data-section="export" onclick="showSection(this.dataset.section)"><i class="fas fa-file-export"></i><span>Eksport</span></a></div>
+                    <div class="nav-item"><a class="nav-link" data-section="ai" onclick="showSection(this.dataset.section)"><i class="fas fa-robot"></i><span>AI Assistent</span></a></div>
+                    <div class="nav-item"><a class="nav-link" data-section="cron" onclick="showSection(this.dataset.section)"><i class="fas fa-clock"></i><span>Cron Jobs</span></a></div>
+                    <div class="nav-item"><a class="nav-link" data-section="system" onclick="showSection(this.dataset.section)"><i class="fas fa-server"></i><span>System</span></a></div>
                 </div>
             </nav>
         </aside>
@@ -984,10 +984,14 @@
 
     <script>
         function showSection(sectionId) {
-            document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
-            document.getElementById(sectionId).classList.add('active');
-            document.querySelectorAll('.nav-link').forEach(l => l.classList.remove('active'));
-            event.target.closest('.nav-link').classList.add('active');
+            const section = document.getElementById(sectionId);
+            if (!section) return;
+
+            document.querySelectorAll('.section').forEach(panel => panel.classList.remove('active'));
+            section.classList.add('active');
+            document.querySelectorAll('.nav-link').forEach(link => {
+                link.classList.toggle('active', link.dataset.section === sectionId);
+            });
             const titles = {
                 'dashboard': 'Dashboard',
                 'sakslista': 'Sakslista Pro',
