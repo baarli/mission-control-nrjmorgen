@@ -32,6 +32,17 @@ test('the podcast panel indicates unknown metrics and episodes without verified 
   assert.doesNotMatch(section, /class="stat-value">\s*\d|class="list-item"/u);
 });
 
+test('the export panel labels local data and the actual downloadable formats', () => {
+  const start = page.indexOf('<div id="export" class="section">');
+  assert.notEqual(start, -1);
+  const section = page.slice(start).split('<!-- AI ASSISTANT SECTION -->', 1)[0];
+  assert.match(section, /class="stat-value">3<\/div>\s*<div class="stat-label">Filformater/u);
+  assert.match(section, /Kalenderdataene i eksporten er eksempeldata\./u);
+  assert.match(section, /HTML-rapport/u);
+  assert.match(section, /Visningsdata \(JSON\)/u);
+  assert.doesNotMatch(section, /Backup klar|Komplett Backup|Alle data i ZIP|PDF Rapport/u);
+});
+
 test('the unavailable morning routine cannot report a successful start', () => {
   assert.ok(/<button\b[^>]*\bdisabled\b[^>]*>\s*<i[^>]*><\/i> Morgenrutine utilgjengelig/u.test(page),
     'the morning routine control must be disabled');
