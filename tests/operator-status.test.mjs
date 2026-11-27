@@ -1,9 +1,46 @@
 import assert from 'node:assert/strict';
 import { readFileSync } from 'node:fs';
 import { test } from 'node:test';
-import { runInNewContext } from 'node:vm';
+import { createContext, runInContext, runInNewContext } from 'node:vm';
 
 const page = readFileSync(new URL('../index.html', import.meta.url), 'utf8');
+const social = page.match(/<div id="social" class="section">[\s\S]*?<!-- TESTING SECTION -->/u)?.[0];
+const socialManager = page.match(/^ {8}class SocialMediaManager \{[\s\S]*?^ {8}\}/m)?.[0];
+const exportManager = page.match(/^ {8}class ExportManager \{[\s\S]*?^ {8}\}/m)?.[0];
+
+function draftElement() {
+  return {
+    children: [],
+    style: {},
+    textContent: '',
+    append(...children) { this.children.push(...children); },
+    replaceChildren(...children) { this.children = children; },
+  };
+}
+
+function setupDrafts(answers) {
+  const alerts = [];
+  const container = draftElement();
+  const context = createContext({
+    alert: message => alerts.push(message),
+    prompt: () => answers.shift(),
+    document: {
+      createElement: draftElement,
+      getElementById: id => id === 'social-drafts' ? container : null,
+    },
+  });
+  assert.ok(socialManager);
+  runInContext(`${socialManager}\nconst socialManager = new SocialMediaManager();`, context);
+  return {
+    alerts,
+    container,
+    context,
+    click(callback) {
+      assert.ok(social?.includes(`onclick="${callback}"`), 'expected a page control for the callback');
+      runInContext(callback, context);
+    },
+  };
+}
 
 test('operation panels present unknown status until telemetry is available', () => {
   for (const id of ['dashboard', 'cron', 'system']) {
@@ -53,4 +90,66 @@ test('the unavailable morning routine cannot report a successful start', () => {
     alert: message => notices.push(message),
   });
   assert.deepEqual(notices, ['Morgenrutinen er utilgjengelig i denne visningen.']);
+});
+
+test('the social panel starts empty and explains that drafts last for the current page session', () => {
+  assert.ok(social);
+  assert.match(social, /Utkastene finnes i denne fanen frem til siden lastes på nytt\./u);
+  assert.match(social, /Ingen lokale utkast/u);
+  assert.doesNotMatch(social, /Planlagt:|>Venter<|Ny episode ute nå!/u);
+});
+
+test('manual and template controls keep the full copy and desired time as session drafts', () => {
+  const copy = 'Dette er en lang kladd med <åpne vinkeltegn> og full tekst.\nAndre linje skal være med.';
+  const time = '2026-11-28 15:00';
+  const link = 'https://example.invalid/episode?q=$&draft=1';
+  const fixture = setupDrafts([copy, 'instagram', time, 'Syntetisk podkast', link, 'youtube', time]);
+  fixture.click('socialManager.createPost()');
+  fixture.click("socialManager.useTemplate('episode')");
+
+  assert.deepEqual(fixture.alerts, ['Lokalt utkast lagt til i denne fanen.', 'Lokalt utkast lagt til i denne fanen.']);
+  const [manual, fromTemplate] = fixture.container.children;
+  assert.equal(manual.children[1].children[0].textContent, copy);
+  assert.equal(manual.children[1].children[1].textContent, `Instagram · Ønsket tidspunkt ${time}`);
+  assert.equal(manual.children[2].textContent, 'Lokalt utkast');
+  assert.equal(fromTemplate.children[1].children[0].textContent,
+    `Ny episode av Syntetisk podkast ute nå! 🎉 Lytt her: ${link}`);
+  assert.equal(fromTemplate.children[1].children[1].textContent, `YouTube · Ønsket tidspunkt ${time}`);
+  assert.equal(fromTemplate.children[2].textContent, 'Lokalt utkast');
+  assert.equal(runInContext('new SocialMediaManager().drafts.length', fixture.context), 0);
+});
+
+test('cancelling a template leaves the draft list empty', () => {
+  const fixture = setupDrafts([null]);
+  fixture.click("socialManager.useTemplate('episode')");
+  assert.deepEqual(fixture.alerts, []);
+  assert.deepEqual(fixture.container.children, []);
+  assert.equal(runInContext('socialManager.drafts.length', fixture.context), 0);
+});
+
+test('both JSON exports describe social entries as drafts with their original desired time', async () => {
+  const fixture = setupDrafts(['Eksportkladd', 'tiktok', '2026-11-28 15:00']);
+  fixture.click('socialManager.createPost()');
+  const downloads = [];
+  assert.ok(exportManager);
+  Object.assign(fixture.context, {
+    Blob, calendar: { calendarItems: [] }, testRunner: { results: [] }, downloads,
+  });
+  runInContext(`${exportManager}
+    const exporter = Object.create(ExportManager.prototype);
+    exporter.downloadFile = (blob) => downloads.push(blob);
+    exporter.logExport = () => {};
+    exporter.exportJSON();
+    exporter.exportViewData();
+  `, fixture.context);
+
+  assert.equal(downloads.length, 2);
+  for (const download of downloads) {
+    const { social: entries } = JSON.parse(await download.text());
+    assert.equal(entries.length, 1);
+    assert.equal(entries[0].content, 'Eksportkladd');
+    assert.equal(entries[0].desiredTime, '2026-11-28 15:00');
+    assert.equal(entries[0].status, 'draft');
+    assert.equal('scheduledTime' in entries[0], false);
+  }
 });
